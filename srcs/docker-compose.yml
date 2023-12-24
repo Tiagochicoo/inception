@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "443:443"
+    volumes:
+      - ./data/nginx:/var/www/html
+    networks:
+      - app-network
+
+  wordpress:
+    build: ./wordpress
+    volumes:
+      - ./data/wordpress:/var/www/html
+    networks:
+      - app-network
+    depends_on:
+      - mariadb
+
+  mariadb:
+    build: ./mariadb
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=your_root_password
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=wordpress_user
+      - MYSQL_PASSWORD=wordpress_password
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db:
+  wordpress:
+  nginx:

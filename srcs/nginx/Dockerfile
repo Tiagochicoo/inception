@@ -1,13 +1,11 @@
-FROM alpine
+FROM nginx:stable-alpine
 
-# Install NGINX
-RUN apk update && apk add nginx
+COPY ./srcs/nginx/default.conf /etc/nginx/conf.d/default.conf
 
-# Copy NGINX configuration file
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copy the SSL certificates
+COPY ./srcs/nginx/cert.crt /etc/ssl/certs/
+COPY ./srcs/nginx/cert.key /etc/ssl/private/
 
-# Expose port 443
 EXPOSE 443
 
-# Set NGINX as the entry point
 CMD ["nginx", "-g", "daemon off;"]
