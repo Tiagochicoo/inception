@@ -3,13 +3,7 @@ COMPOSE_FILE = srcs/docker-compose.yml
 ENV_FILE = srcs/.env
 
 # Default action
-all: docker-up build up
-
-docker-up:
-	@printf "\e[38;5;45m ╔════════════════════════════════════════╗\e[0m\n"
-	@printf "\e[38;5;45m ║     Ensuring Docker service is up      ║\e[0m\n"
-	@printf "\e[38;5;45m ╚════════════════════════════════════════╝\e[0m\n"
-	sudo service docker start || sudo systemctl start docker
+all: build up
 
 # Build Docker images using docker-compose
 build:
