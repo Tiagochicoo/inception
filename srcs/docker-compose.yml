@@ -1,49 +1,26 @@
-version: '3'
+version: "3.9"
 
-services:
+services: 
   nginx:
-    build: 
-      context: ./nginx
+    container_name: nginx
+    image: nginx:latest
     ports:
-      - "443:443"
+      - "80:80"
     volumes:
-      - ./data/nginx:/var/www/html
-    networks:
-      - app-network
-
-  wordpress:
-    image: wordpress:latest  # or specify a version like wordpress:5.7-php7.4-fpm
-    container_name: wordpress
-    depends_on:
-      - mariadb  # Ensures that the MariaDB container starts first
-    environment:
-      WORDPRESS_DB_HOST: mariadb  # The hostname must match the service name of your MariaDB container
-      WORDPRESS_DB_USER: MYSQL_USER  # The username for the WordPress database
-      WORDPRESS_DB_PASSWORD: MYSQL_PASSWORD  # The password for the WordPress database
-      WORDPRESS_DB_NAME: MYSQL_DATABASE  # The name of the database for WordPress
-    volumes:
-      - wordpress_data:/var/www/html  # Persistent storage for your WordPress files
-    networks:
-      - app-network
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./wordpress:/var/www/html
 
   mariadb:
-    build: ./mariadb
-    volumes:
-      - ./data/db:/var/lib/mysql
+    container_name: mariadb
+    image: mariadb:latest
     environment:
-      - MYSQL_ROOT_PASSWORD=your_root_password
-      - MYSQL_DATABASE=wordpress
-      - MYSQL_USER=wordpress_user
-      - MYSQL_PASSWORD=wordpress_password
-    networks:
-      - app-network
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
 
-networks:
-  app-network:
-    driver: bridge
-
-volumes:
-  db:
   wordpress:
-  nginx:
-  wordpress_data:
+    container_name: wordpress
+    image: wordpress:php7.4-fpm
+    volumes:
+      - ./wordpress:/var/www/html
