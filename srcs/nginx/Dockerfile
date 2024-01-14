@@ -1,4 +1,4 @@
-FROM nginx:stable-alpine
+FROM debian:10.11
 
 COPY default.conf /etc/nginx/conf.d/default.conf
 

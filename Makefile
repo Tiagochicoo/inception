@@ -1,6 +1,6 @@
 # Variables
 COMPOSE_FILE = srcs/docker-compose.yml
-ENV_FILE = srcs/.env
+ENV_FILE = .env
 
 # Default action
 all: build up

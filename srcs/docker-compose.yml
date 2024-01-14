@@ -3,38 +3,38 @@ version: '3'
 services:
   nginx:
     build: 
-      context: ./nginx
+      context: ./srcs/nginx
     ports:
       - "443:443"
     volumes:
-      - ./data/nginx:/var/www/html
+      - ./data/nginx:/etc/nginx/certs  # Adjust as needed for your SSL certificates
     networks:
       - app-network
 
   wordpress:
-    image: wordpress:latest  # or specify a version like wordpress:5.7-php7.4-fpm
+    image: wordpress:5.7-php7.4-fpm  # Use specific version instead of latest
     container_name: wordpress
     depends_on:
-      - mariadb  # Ensures that the MariaDB container starts first
+      - mariadb
     environment:
-      WORDPRESS_DB_HOST: mariadb  # The hostname must match the service name of your MariaDB container
-      WORDPRESS_DB_USER: MYSQL_USER  # The username for the WordPress database
-      WORDPRESS_DB_PASSWORD: MYSQL_PASSWORD  # The password for the WordPress database
-      WORDPRESS_DB_NAME: MYSQL_DATABASE  # The name of the database for WordPress
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_USER: wordpress_user  # Replace with your database username
+      WORDPRESS_DB_PASSWORD: wordpress_password  # Replace with your database password
+      WORDPRESS_DB_NAME: wordpress  # Replace with your database name
     volumes:
-      - wordpress_data:/var/www/html  # Persistent storage for your WordPress files
+      - ./data/wordpress:/var/www/html
     networks:
       - app-network
 
   mariadb:
-    build: ./mariadb
+    image: mariadb:10.5  # Use specific version instead of latest
     volumes:
       - ./data/db:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=your_root_password
-      - MYSQL_DATABASE=wordpress
-      - MYSQL_USER=wordpress_user
-      - MYSQL_PASSWORD=wordpress_password
+      MYSQL_ROOT_PASSWORD: root_password  # Replace with your root password
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress_user
+      MYSQL_PASSWORD: wordpress_password
     networks:
       - app-network
 
@@ -43,7 +43,4 @@ networks:
     driver: bridge
 
 volumes:
-  db:
-  wordpress:
-  nginx:
   wordpress_data:
