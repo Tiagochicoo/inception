@@ -1,49 +1,39 @@
-version: '3'
+version: "3.7"
 
-services:
-  nginx:
-    build: 
-      context: ./nginx
-    ports:
-      - "443:443"
-    volumes:
-      - ./data/nginx:/var/www/html
-    networks:
-      - app-network
+services: 
 
-  wordpress:
-    image: wordpress:latest  # or specify a version like wordpress:5.7-php7.4-fpm
-    container_name: wordpress
-    depends_on:
-      - mariadb  # Ensures that the MariaDB container starts first
-    environment:
-      WORDPRESS_DB_HOST: mariadb  # The hostname must match the service name of your MariaDB container
-      WORDPRESS_DB_USER: MYSQL_USER  # The username for the WordPress database
-      WORDPRESS_DB_PASSWORD: MYSQL_PASSWORD  # The password for the WordPress database
-      WORDPRESS_DB_NAME: MYSQL_DATABASE  # The name of the database for WordPress
-    volumes:
-      - wordpress_data:/var/www/html  # Persistent storage for your WordPress files
-    networks:
-      - app-network
-
-  mariadb:
-    build: ./mariadb
-    volumes:
-      - ./data/db:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=your_root_password
-      - MYSQL_DATABASE=wordpress
-      - MYSQL_USER=wordpress_user
-      - MYSQL_PASSWORD=wordpress_password
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
-
-volumes:
   db:
+    image: mariadb:10
+    container_name: mariadb
+    environment:
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+  
   wordpress:
+    image: wordpress:php7.3-fpm-alpine
+    container_name: wordpress
+    links:
+      - db
+    volumes:
+      - wp_files:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: "${WORDPRESS_DB_HOST}"
+      WORDPRESS_DB_NAME: "${WORDPRESS_DB_NAME}"
+      WORDPRESS_DB_USER: "${WORDPRESS_DB_USER}"
+      WORDPRESS_DB_PASSWORD: "${WORDPRESS_DB_PASSWORD}"
+  
   nginx:
-  wordpress_data:
+    image: nginx:alpine
+    container_name: nginx
+    depends_on: 
+      - wordpress
+    ports:
+      - 8080:80
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d
+      - wp_files:/var/www/html
+
+volumes: 
+  wp_files: 

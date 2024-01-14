@@ -17,7 +17,7 @@ up:
 	@printf "\e[38;5;46m ╔════════════════════════════════════════╗ \e[0m\n"
 	@printf "\e[38;5;46m ║    Creating and starting containers    ║ \e[0m\n"
 	@printf "\e[38;5;46m ╚════════════════════════════════════════╝ \e[0m\n"
-	docker-compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) up -d
+	docker-compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) up -d --remove-orphans
 
 # Stop and remove containers, networks, images, and volumes
 down:
