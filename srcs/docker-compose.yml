@@ -12,13 +12,19 @@ services:
       - app-network
 
   wordpress:
-    build: ./wordpress
+    image: wordpress:latest  # or specify a version like wordpress:5.7-php7.4-fpm
+    container_name: wordpress
+    depends_on:
+      - mariadb  # Ensures that the MariaDB container starts first
+    environment:
+      WORDPRESS_DB_HOST: mariadb  # The hostname must match the service name of your MariaDB container
+      WORDPRESS_DB_USER: MYSQL_USER  # The username for the WordPress database
+      WORDPRESS_DB_PASSWORD: MYSQL_PASSWORD  # The password for the WordPress database
+      WORDPRESS_DB_NAME: MYSQL_DATABASE  # The name of the database for WordPress
     volumes:
-      - ./data/wordpress:/var/www/html
+      - wordpress_data:/var/www/html  # Persistent storage for your WordPress files
     networks:
       - app-network
-    depends_on:
-      - mariadb
 
   mariadb:
     build: ./mariadb
@@ -40,3 +46,4 @@ volumes:
   db:
   wordpress:
   nginx:
+  wordpress_data:
