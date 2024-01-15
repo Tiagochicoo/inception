@@ -1,5 +1,5 @@
 # Use the official Nginx image as a base
-FROM nginx:latest
+FROM nginx:1.24.0-alpine-slim
 
 # Copy your custom Nginx configuration file into the container
 COPY ./default.conf /etc/nginx/nginx.conf
