@@ -5,10 +5,16 @@ services:
     container_name: nginx
     image: nginx:latest
     ports:
-      - "80:80"
+      - "443:443"
     volumes:
+      - ./nginx/ssl:/etc/nginx/certs
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./wordpress:/var/www/html
+      - ./data/wordpress:/var/www/html
+    depends_on:
+      - mariadb
+      - wordpress
+    networks:
+      - wordpress-network
 
   mariadb:
     container_name: mariadb
@@ -18,9 +24,17 @@ services:
       MYSQL_USER: "${MYSQL_USER}"
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    networks:
+      - wordpress-network
 
   wordpress:
     container_name: wordpress
     image: wordpress:php7.4-fpm
     volumes:
-      - ./wordpress:/var/www/html
+      - ./data/wordpress:/var/www/html
+    networks:
+      - wordpress-network
+
+networks:
+  wordpress-network:
+    driver: bridge
