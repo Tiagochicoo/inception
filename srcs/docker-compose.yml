@@ -3,7 +3,7 @@ version: "3.9"
 services: 
   nginx:
     container_name: nginx
-    image: nginx:latest
+    build: ./nginx
     ports:
       - "443:443"
     volumes:
@@ -15,10 +15,12 @@ services:
       - wordpress
     networks:
       - wordpress-network
+    restart: always
+
 
   mariadb:
     container_name: mariadb
-    image: mariadb:latest
+    image: mariadb
     environment:
       MYSQL_DATABASE: "${MYSQL_DATABASE}"
       MYSQL_USER: "${MYSQL_USER}"
