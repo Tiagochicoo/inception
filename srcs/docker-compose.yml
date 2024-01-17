@@ -13,11 +13,13 @@ services:
       - wordpress
     networks:
       - wordpress-network
-    # restart: always
+    restart: always
 
   mariadb:
     container_name: mariadb
     build: ./mariadb
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
     environment:
       MYSQL_DATABASE: "${MYSQL_DATABASE}"
       MYSQL_USER: "${MYSQL_USER}"
@@ -25,6 +27,7 @@ services:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
     networks:
       - wordpress-network
+    restart: always
 
   wordpress:
     container_name: wordpress
