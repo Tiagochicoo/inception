@@ -13,11 +13,11 @@ services:
       - wordpress
     networks:
       - wordpress-network
-    restart: always
+    # restart: always
 
   mariadb:
     container_name: mariadb
-    image: mariadb
+    build: ./mariadb
     environment:
       MYSQL_DATABASE: "${MYSQL_DATABASE}"
       MYSQL_USER: "${MYSQL_USER}"
@@ -28,7 +28,7 @@ services:
 
   wordpress:
     container_name: wordpress
-    image: wordpress:php7.4-fpm
+    build: ./wordpress
     volumes:
       - ./data/wordpress:/var/www/html
     networks:
