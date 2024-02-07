@@ -8,8 +8,9 @@ services:
       - "443:443"
     volumes:
       - ./data/wordpress:/var/www/html
+      - ./nginx/ssl:/etc/nginx/ssl/
+      - ./nginx/default.conf:/etc/nginx/http.d/nginx.conf
     depends_on:
-      - mariadb
       - wordpress
     networks:
       - wordpress-network

@@ -29,10 +29,13 @@ down:
 # Rebuild the project from scratch
 re: down all
 
+# Remove all containers, images, and volumes
 clean:
 	sudo docker container rm -f $$(sudo docker container ls -aq)
 	sudo docker image rm -f $(sudo docker image ls -aq)
 	sudo docker volume rm -f $(sudo docker volume ls -q)
+	sudo docker system prune -a -f
+
 # Display status of containers
 ps:
 	@printf "\e[38;5;226m ╔════════════════════════════════════════╗ \e[0m\n"

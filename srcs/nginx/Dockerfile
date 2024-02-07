@@ -1,5 +1,8 @@
-# Use the official Nginx image as a base
-FROM nginx:1.24.0-alpine-slim
+# Use alpine linux as the base image
+FROM alpine:3.18
+
+# Update, upgrade and install Nginx package in the container
+RUN	apk update && apk upgrade && apk add --no-cache nginx
 
 # Copy your custom Nginx configuration file into the container
 COPY ./default.conf /etc/nginx/nginx.conf
