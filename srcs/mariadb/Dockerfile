@@ -2,9 +2,9 @@
 
 FROM alpine:3.16
 
-ARG DB_NAME \
-    DB_USER \
-    DB_PASS
+ARG WORDPRESS_DB_NAME \
+    WORDPRESS_DB_USER \
+    WORDPRESS_DB_PASSWORD
 
 RUN apk update && apk add --no-cache mariadb mariadb-client
 
