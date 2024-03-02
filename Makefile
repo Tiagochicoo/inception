@@ -1,5 +1,7 @@
 # Variables
 COMPOSE_FILE = srcs/docker-compose.yml
+
+## TODO: Pass the full path of the VM here
 ENV_FILE = srcs/.env
 
 # Default action
@@ -24,17 +26,26 @@ down:
 	@printf "\e[38;5;196m ╔════════════════════════════════════════╗ \e[0m\n"
 	@printf "\e[38;5;196m ║ Stopping/removing containers & volumes ║ \e[0m\n"
 	@printf "\e[38;5;196m ╚════════════════════════════════════════╝ \e[0m\n"
-	docker-compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) down
+	docker-compose -f $(COMPOSE_FILE) down
 
 # Rebuild the project from scratch
 re: down all
 
 # Remove all containers, images, and volumes
-clean:
-	sudo docker container rm -f $$(sudo docker container ls -aq)
-	sudo docker image rm -f $(sudo docker image ls -aq)
-	sudo docker volume rm -f $(sudo docker volume ls -q)
-	sudo docker system prune -a -f
+clean: down
+	@printf "\e[38;5;196m ╔════════════════════════════════════════╗ \e[0m\n"
+	@printf "\e[38;5;196m ║    Cleaning all containers & volumes   ║ \e[0m\n"
+	@printf "\e[38;5;196m ╚════════════════════════════════════════╝ \e[0m\n"
+	sudo docker system prune --a
+	
+fclean:
+	@printf "\e[38;5;196m ╔════════════════════════════════════════╗ \e[0m\n"
+	@printf "\e[38;5;196m ║    Cleaning all containers & volumes   ║ \e[0m\n"
+	@printf "\e[38;5;196m ╚════════════════════════════════════════╝ \e[0m\n"
+	sudo docker stop $$(sudo docker ps -qa)
+	sudo docker system prune --all --force --volumes
+	sudo docker network prune --force
+	sudo docker volume prune --force
 
 # Display status of containers
 ps:
@@ -50,4 +61,4 @@ logs:
 	@printf "\e[38;5;93m ╚════════════════════════════════════════╝ \e[0m\n"
 	docker-compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) logs
 
-.PHONY: all build up down re ps logs
+.PHONY: all build up down clean fclean re ps logs
