@@ -1,28 +1,27 @@
-# FROM mariadb
+FROM alpine:3.18
 
-FROM alpine:3.16
+# Install the required packages
+RUN apk add --no-cache mariadb mariadb-client mariadb-server-utils pwgen
 
-ARG WORDPRESS_DB_NAME \
-    WORDPRESS_DB_USER \
-    WORDPRESS_DB_PASSWORD
+# Create mysql user and group
+RUN addgroup -S mysql && adduser -S mysql -G mysql
 
-RUN apk update && apk add --no-cache mariadb mariadb-client
+# Initialize the data directory
+RUN mkdir /var/lib/mysql /var/run/mysqld \
+  && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld \
+  && chmod 777 /var/run/mysqld
 
-RUN mkdir /var/run/mysqld; \
-    chmod 777 /var/run/mysqld; \
-    { echo '[mysqld]'; \
-      echo 'skip-host-cache'; \
-      echo 'skip-name-resolve'; \
-      echo 'bind-address=0.0.0.0'; \
-    } | tee  /etc/my.cnf.d/docker.cnf; \
-    sed -i "s|skip-networking|skip-networking=0|g" \
-      /etc/my.cnf.d/mariadb-server.cnf
-
-RUN mysql_install_db --user=mysql --datadir=/var/lib/mysql
-
+# Expose the port MariaDB is reachable on
 EXPOSE 3306
 
-COPY ./scripts/create_db.sh .
-RUN sh create_db.sh && rm create_db.sh
-USER mysql
-CMD ["/usr/bin/mysqld", "--skip-log-error"]
+# Copy the MariaDB configuration
+COPY my.cnf /etc/mysql/my.cnf
+
+# Copy your script into the container
+COPY create_db.sh /create_db.sh
+
+# Make sure scripts are executable
+RUN chmod +x /create_db.sh
+
+# Start MariaDB
+CMD ["/bin/sh", "/create_db.sh"]

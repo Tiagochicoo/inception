@@ -39,6 +39,8 @@ services:
       - ./data/wordpress:/var/www/html
     networks:
       - wordpress-network
+    depends_on:
+      - mariadb
 
 networks:
   wordpress-network:
