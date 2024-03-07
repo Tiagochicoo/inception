@@ -37,10 +37,17 @@ services:
     build: ./wordpress
     volumes:
       - ./data/wordpress:/var/www/html
+    environment:
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      WORDPRESS_DB_HOST: "${WORDPRESS_DB_HOST}"
+      WORDPRESS_DB_NAME: "${WORDPRESS_DB_NAME}"
+      WORDPRESS_DB_USER: "${WORDPRESS_DB_USER}"
+      WORDPRESS_DB_PASSWORD: "${WORDPRESS_DB_PASSWORD}"
     networks:
       - wordpress-network
     depends_on:
       - mariadb
+    restart: always
 
 networks:
   wordpress-network:

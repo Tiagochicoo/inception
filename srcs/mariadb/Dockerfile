@@ -1,27 +1,29 @@
-FROM alpine:3.18
+FROM mariadb
 
-# Install the required packages
-RUN apk add --no-cache mariadb mariadb-client mariadb-server-utils pwgen
+# FROM alpine:3.18
 
-# Create mysql user and group
-RUN addgroup -S mysql && adduser -S mysql -G mysql
+# # Install the required packages
+# RUN apk add --no-cache mariadb mariadb-client mariadb-server-utils pwgen
 
-# Initialize the data directory
-RUN mkdir /var/lib/mysql /var/run/mysqld \
-  && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld \
-  && chmod 777 /var/run/mysqld
+# # Create mysql user and group
+# RUN addgroup -S mysql && adduser -S mysql -G mysql
 
-# Expose the port MariaDB is reachable on
-EXPOSE 3306
+# # Initialize the data directory
+# RUN mkdir /var/lib/mysql /var/run/mysqld \
+#   && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld \
+#   && chmod 777 /var/run/mysqld
 
-# Copy the MariaDB configuration
-COPY my.cnf /etc/mysql/my.cnf
+# # Expose the port MariaDB is reachable on
+# EXPOSE 3306
 
-# Copy your script into the container
-COPY create_db.sh /create_db.sh
+# # Copy the MariaDB configuration
+# COPY my.cnf /etc/mysql/my.cnf
 
-# Make sure scripts are executable
-RUN chmod +x /create_db.sh
+# # Copy your script into the container
+# COPY create_db.sh /create_db.sh
 
-# Start MariaDB
-CMD ["/bin/sh", "/create_db.sh"]
+# # Make sure scripts are executable
+# RUN chmod +x /create_db.sh
+
+# # Start MariaDB
+# CMD ["/bin/sh", "/create_db.sh"]
