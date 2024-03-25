@@ -59,6 +59,6 @@ logs:
 	@printf "\e[38;5;93m ╔════════════════════════════════════════╗ \e[0m\n"
 	@printf "\e[38;5;93m ║         Viewing logs from containers   ║ \e[0m\n"
 	@printf "\e[38;5;93m ╚════════════════════════════════════════╝ \e[0m\n"
-	docker-compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) logs
+	docker-compose -f $(COMPOSE_FILE) logs
 
 .PHONY: all build up down clean fclean re ps logs

@@ -7,13 +7,13 @@ services:
     ports:
       - "443:443"
     volumes:
-      - ./data/wordpress:/var/www/html
+      - ./data/wordpress:/var/www/html/wordpress
       - ./nginx/ssl:/etc/nginx/ssl/
       - ./nginx/default.conf:/etc/nginx/http.d/nginx.conf
     depends_on:
       - wordpress
     networks:
-      - wordpress-network
+      - inception
     restart: always
 
   mariadb:
@@ -29,26 +29,30 @@ services:
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
     networks:
-      - wordpress-network
+      - inception
     restart: always
 
   wordpress:
     container_name: wordpress
     build: ./wordpress
     volumes:
-      - ./data/wordpress:/var/www/html
+      - ./data/wordpress:/var/www/html/wordpress
     environment:
       MYSQL_DATABASE: "${MYSQL_DATABASE}"
       WORDPRESS_DB_HOST: "${WORDPRESS_DB_HOST}"
       WORDPRESS_DB_NAME: "${WORDPRESS_DB_NAME}"
       WORDPRESS_DB_USER: "${WORDPRESS_DB_USER}"
       WORDPRESS_DB_PASSWORD: "${WORDPRESS_DB_PASSWORD}"
+      WORDPRESS_DB_ADMIN_USER: "${WORDPRESS_DB_ADMIN_USER}"
+      WORDPRESS_DB_USER_EMAIL: "${WORDPRESS_DB_USER_EMAIL}"
+      WORDPRESS_DB_ADMIN_EMAIL: "${WORDPRESS_DB_ADMIN_EMAIL}"
+      WORDPRESS_DB_ADMIN_PASSWORD: "${WORDPRESS_DB_ADMIN_PASSWORD}"
     networks:
-      - wordpress-network
+      - inception
     depends_on:
       - mariadb
     restart: always
 
 networks:
-  wordpress-network:
+  inception:
     driver: bridge

@@ -1,44 +1,62 @@
-FROM wordpress:php7.4-fpm-alpine
+####### ERASE LATER #####
 
-# FROM alpine:3.12
+# FROM wordpress:php7.4-fpm-alpine
+# RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.18/community" >> /etc/apk/repositories
 
-# # Install packages
+#########################
 
-# RUN apk add --no-cache \
-#     php7 \
-#     php7-fpm \
-#     php7-mysqli \
-#     php7-json \
-#     php7-openssl \
-#     php7-curl \
-#     php7-zlib \
-#     php7-xml \
-#     php7-phar \
-#     php7-intl \
-#     php7-dom \
-#     php7-xmlreader \
-#     php7-ctype \
-#     php7-session \
-#     php7-mbstring \
-#     nginx \
-#     curl
+FROM alpine:3.18
 
+# Install PHP-FPM and required PHP extensions
+RUN apk add --no-cache \
+	php82 \
+	php82-fpm \
+	php82-opcache \
+	php82-gd \
+	php82-mysqli \
+	php82-zlib \
+	php82-curl \
+	php82-mbstring \
+	php82-json \
+	php82-xml \
+	php82-phar \
+	php82-intl \
+	php82-dom \
+	php82-xmlreader \
+	php82-ctype \
+	php82-session \
+	php82-iconv \
+	php82-simplexml \
+	curl \
+	wget \
+	tar 
 
-# # Configure nginx and php-fpm
-# # COPY ../srcs/nginx.conf /etc/nginx/conf.d/default.conf
+# symlink php to php8.2
+RUN ln -s /usr/bin/php82 /usr/bin/php
 
-# COPY ./php-fpm.conf /etc/php7/php-fpm.d/www.conf
+# Create the directories in one command
+RUN mkdir -p /var/www/html/wordpress
 
-# # Install wordpress
-# RUN curl -o wordpress.tar.gz https://wordpress.org/latest.tar.gz && \
-#     tar -xvf wordpress.tar.gz && \
-#     rm wordpress.tar.gz && \
-#     mv wordpress /var/www/wordpress
+# Download and extract Wordpress
+WORKDIR /var/www/html/wordpress
+RUN wget https://wordpress.org/latest.tar.gz \
+	&& tar -xzvf latest.tar.gz \
+	&& rm latest.tar.gz
 
-# EXPOSE 9000
+# Copy the configuration files
+COPY ./configs/www.conf /etc/php8/php-fpm.d/www.conf
+COPY ./scripts/run.sh /tmp/run.sh
+COPY ./configs/wp-config.php /var/www/html/wordpress/wp-config.php
 
-# # Copy wordpress config file
-# # COPY ../srcs/wp-config.php /var/www/wordpress/wp-config.php
+RUN chmod +x /tmp/run.sh
 
-# # Start Nginx and PHP-FPM
-# CMD ["php-fpm7", "-F", "-g", "daemon off;"]
+# Wordpress Instalation
+WORKDIR /tmp/
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+RUN chmod +x wp-cli.phar
+RUN mv wp-cli.phar /usr/local/bin/wp
+
+# Expose the port PHP-FPM listens on
+EXPOSE 9000
+
+ENTRYPOINT ["ash","-c", "/bin/ash /tmp/run.sh;"]
