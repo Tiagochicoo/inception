@@ -44,7 +44,7 @@ RUN wget https://wordpress.org/latest.tar.gz \
 	&& rm latest.tar.gz
 
 # Copy the configuration files
-COPY ./configs/www.conf /etc/php8/php-fpm.d/www.conf
+COPY ./configs/www.conf /etc/php82/php-fpm.d/www.conf
 COPY ./scripts/run.sh /tmp/run.sh
 COPY ./configs/wp-config.php /var/www/html/wordpress/wp-config.php
 

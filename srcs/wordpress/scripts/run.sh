@@ -5,14 +5,12 @@ do
 	sleep 1;
 done
 
-sleep 5;
-
 # WordPress path
 WP_PATH="/var/www/html/wordpress"
 
 # Check if WordPress is installed or wp-config.php exists
 if [ ! -f "$WP_PATH/wp-config.php" ]; then
-    echo "WordPress is not installed. Installing..."
+    echo "WordPress is not installed."
 
     # Ensure WordPress files are present
     if [ ! -f "$WP_PATH/wp-load.php" ]; then
