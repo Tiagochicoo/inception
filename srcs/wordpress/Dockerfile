@@ -46,9 +46,10 @@ RUN wget https://wordpress.org/latest.tar.gz \
 # Copy the configuration files
 COPY ./configs/www.conf /etc/php82/php-fpm.d/www.conf
 COPY ./scripts/run.sh /tmp/run.sh
-COPY ./configs/wp-config.php /var/www/html/wordpress/wp-config.php
 
 RUN chmod +x /tmp/run.sh
+
+RUN chmod 777 /var/www/html/wordpress
 
 # Wordpress Instalation
 WORKDIR /tmp/

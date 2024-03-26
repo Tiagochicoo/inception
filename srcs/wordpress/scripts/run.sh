@@ -25,7 +25,10 @@ else
     --dbcharset="utf8" \
     --dbcollate="" \
     --allow-root \
-    --path=$(pwd) 
+    --path=$(pwd) \
+    --extra-php <<PHP
+    define('FS_METHOD', 'direct');
+PHP
 
     echo "Installing WordPress..."
     wp core install --url="$WORDPRESS_URL" \
