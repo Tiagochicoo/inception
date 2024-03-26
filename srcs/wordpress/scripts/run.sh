@@ -1,54 +1,46 @@
 #!/bin/sh
 
-while [ ! -e /var/www/html/wordpress/ ]
-do
-	sleep 1;
-done
+# Create directories if they don't exist
+mkdir -p /var/www/html/wordpress
 
-# WordPress path
-WP_PATH="/var/www/html/wordpress"
+# Change to the directory where WordPress should be installed
+cd /var/www/html/wordpress
 
-# Check if WordPress is installed or wp-config.php exists
-if [ ! -f "$WP_PATH/wp-config.php" ]; then
-    echo "WordPress is not installed."
-
-    # Ensure WordPress files are present
-    if [ ! -f "$WP_PATH/wp-load.php" ]; then
-        echo "Downloading WordPress..."
-        wp core download --path="$WP_PATH" --allow-root
-    fi
-
+# Check if WordPress is already downloaded and wp-config.php exists
+if [ -f wp-config.php ]; then
+    echo "WordPress is already downloaded."
+else
+    echo "Downloading WordPress..."
+    curl -LO https://wordpress.org/latest.tar.gz
+    # Extract WordPress, strip the top-level directory
+    tar xzvf latest.tar.gz --strip-components=1
+    rm -rf latest.tar.gz
+    
     echo "Creating wp-config.php..."
-    wp config create --path="$WP_PATH" --allow-root \
-        --dbname="${WORDPRESS_DB_NAME}" \
-        --dbuser="${WORDPRESS_DB_USER}" \
-        --dbpass="${WORDPRESS_DB_PASSWORD}" \
-        --dbhost="${WORDPRESS_DB_HOST:-localhost}"
-fi
+    # Assumes wp-cli is available in the PATH
+    wp config create --dbname="$MYSQL_DATABASE" \
+    --dbuser="$WORDPRESS_DB_USER" \
+    --dbpass="$WORDPRESS_DB_PASSWORD" \
+    --dbhost="$WORDPRESS_DB_HOST" \
+    --dbcharset="utf8" \
+    --dbcollate="" \
+    --allow-root \
+    --path=$(pwd) 
 
-# Install WordPress if not already installed
-if ! wp core is-installed --path="$WP_PATH" --allow-root; then
     echo "Installing WordPress..."
-    wp core install --path="$WP_PATH" --allow-root \
-        --url="${WORDPRESS_SITE_URL}" \
-        --title="${WORDPRESS_SITE_TITLE}" \
-        --admin_user="${WORDPRESS_DB_ADMIN_USER}" \
-        --admin_password="${WORDPRESS_DB_ADMIN_PASSWORD}" \
-        --admin_email="${WORDPRESS_DB_ADMIN_EMAIL}"
+    wp core install --url="$WORDPRESS_URL" \
+    --title="$WORDPRESS_TITLE" \
+    --admin_user="$WORDPRESS_DB_ADMIN_USER" \
+    --admin_password="$WORDPRESS_DB_ADMIN_PASSWORD" \
+    --admin_email="$WORDPRESS_DB_ADMIN_EMAIL" \
+    --skip-email \
+    --allow-root \
+    --path=$(pwd)
 
-    # Create additional user
-    wp user create --path="$WP_PATH" --allow-root \
-        $WORDPRESS_DB_USER \
-        $WORDPRESS_DB_USER_EMAIL \
-        --role=author \
-        --user_pass=$WORDPRESS_DB_PASSWORD
+    echo "Creating additional WordPress user..."
+    wp user create --allow-root ${WORDPRESS_DB_USER} ${WORDPRESS_DB_USER_EMAIL} --user_pass=${WORDPRESS_DB_PASSWORD} --path=$(pwd)
 fi
 
-# Config php.ini (adjust for your PHP version)
-sed -i "s/memory_limit = .*/memory_limit = 256M/" /etc/php82/php.ini
-sed -i "s/upload_max_filesize = .*/upload_max_filesize = 128M/" /etc/php82/php.ini
-sed -i "s/zlib.output_compression = .*/zlib.output_compression = on/" /etc/php82/php.ini
-sed -i "s/max_execution_time = .*/max_execution_time = 18000/" /etc/php82/php.ini
-
-# Start PHP-FPM
-php-fpm82 -F -R
+echo "Starting PHP-FPM..."
+# Make sure the path to PHP-FPM executable is correct for your setup
+exec /usr/sbin/php-fpm82 -F

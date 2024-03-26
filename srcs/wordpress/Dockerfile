@@ -60,3 +60,5 @@ RUN mv wp-cli.phar /usr/local/bin/wp
 EXPOSE 9000
 
 ENTRYPOINT ["ash","-c", "/bin/ash /tmp/run.sh;"]
+
+WORKDIR /var/www/html/wordpress

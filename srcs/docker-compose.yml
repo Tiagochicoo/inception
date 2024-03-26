@@ -23,11 +23,8 @@ services:
       - "3306:3306"
     volumes:
       - ./data/mariadb:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: "${MYSQL_DATABASE}"
-      MYSQL_USER: "${MYSQL_USER}"
-      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    env_file:
+      - .env
     networks:
       - inception
     restart: always
@@ -37,16 +34,8 @@ services:
     build: ./wordpress
     volumes:
       - ./data/wordpress:/var/www/html/wordpress
-    environment:
-      MYSQL_DATABASE: "${MYSQL_DATABASE}"
-      WORDPRESS_DB_HOST: "${WORDPRESS_DB_HOST}"
-      WORDPRESS_DB_NAME: "${WORDPRESS_DB_NAME}"
-      WORDPRESS_DB_USER: "${WORDPRESS_DB_USER}"
-      WORDPRESS_DB_PASSWORD: "${WORDPRESS_DB_PASSWORD}"
-      WORDPRESS_DB_ADMIN_USER: "${WORDPRESS_DB_ADMIN_USER}"
-      WORDPRESS_DB_USER_EMAIL: "${WORDPRESS_DB_USER_EMAIL}"
-      WORDPRESS_DB_ADMIN_EMAIL: "${WORDPRESS_DB_ADMIN_EMAIL}"
-      WORDPRESS_DB_ADMIN_PASSWORD: "${WORDPRESS_DB_ADMIN_PASSWORD}"
+    env_file:
+      - .env
     networks:
       - inception
     depends_on:
