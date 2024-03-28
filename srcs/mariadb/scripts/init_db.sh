@@ -1,37 +1,31 @@
 #!/bin/sh
 
-# Initialize MariaDB Data Directory
-mysql_install_db --user=mysql --datadir=/var/lib/mysql
+echo "Creating MariaDB Database..."
 
-# Start MariaDB
-/usr/bin/mysqld_safe --datadir='/var/lib/mysql' &
-pid="$!"
+# Ensure the environment variables are passed correctly
+DB_NAME=${MYSQL_DATABASE:-wordpress}
+DB_USER=${MYSQL_USER:-tpereira}
+DB_PASSWORD=${MYSQL_PASSWORD:-abc123$$}
 
-# Wait for MariaDB to start
-sleep 10
-
-# Secure MariaDB
-mysql_secure_installation <<EOF
-
-y
-${MYSQL_ROOT_PASSWORD}
-${MYSQL_ROOT_PASSWORD}
-y
-y
-y
-y
-EOF
-
-# Create a database and user
-if [ -n "${MYSQL_DATABASE}" ]; then
-    echo "Creating database: ${MYSQL_DATABASE}"
-    mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
+# Initialize the data directory if it doesn't exist
+if [ ! -d "/var/lib/mysql/mysql" ]; then
+    mysql_install_db --user=mysql --datadir=/var/lib/mysql
 fi
 
-if [ -n "${MYSQL_USER}" ] && [ -n "${MYSQL_PASSWORD}" ]; then
-    echo "Creating user: ${MYSQL_USER}"
-    mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "GRANT ALL ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}'; FLUSH PRIVILEGES;"
-fi
+# Start MariaDB in the background with a custom socket and pid file to avoid conflicts
+mysqld_safe --datadir='/var/lib/mysql' --socket='/run/mysqld/mysqld.sock' --pid-file='/run/mysqld/mysqld.pid' &
+
+# Wait for MariaDB to start up
+while ! mysqladmin ping --socket='/run/mysqld/mysqld.sock' --silent; do
+    echo "Waiting for MariaDB to start..."
+    sleep 1
+done
+
+# Create the user and database
+echo "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};
+CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
+GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%';
+FLUSH PRIVILEGES;" | mysql --socket='/run/mysqld/mysqld.sock' -u root
 
 # Keep MariaDB running in the foreground
 wait
