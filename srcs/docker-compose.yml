@@ -37,7 +37,7 @@ services:
     container_name: wordpress
     build: ./wordpress
     volumes:
-      - ./data/wordpress:/var/www/html/wordpress
+      - wordpress_vol:/var/www/html/wordpress
     env_file:
       - .env
     networks:
@@ -46,5 +46,15 @@ services:
       - mariadb
     restart: always
 
+# Need to change the device path to show /home/tpereira/data in 42 cluster VM
+volumes:
+  wordpress_vol:
+    driver: local
+    driver_opts: 
+      type: none
+      device: /Users/tiago/Desktop/42Cursus/inception/srcs/data/wordpress
+      o: bind
+
 networks:
   inception:
+    driver: bridge
