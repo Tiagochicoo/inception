@@ -61,4 +61,12 @@ logs:
 	@printf "\e[38;5;93m ╚════════════════════════════════════════╝ \e[0m\n"
 	docker-compose -f $(COMPOSE_FILE) logs
 
+remove:
+	rm -rf ./srcs/data/wordpress/*
+	rm -rf ./srcs/data/mariadb/*
+	docker stop $$(docker ps -qa); docker rm $$(docker ps -qa);
+	docker rmi -f $$(docker images -qa); 
+	docker volume rm $$(docker volume ls -q); 
+	docker network rm $$(docker network ls -q) 2>/dev/null
+
 .PHONY: all build up down clean fclean re ps logs
