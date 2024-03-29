@@ -1,23 +1,20 @@
 #!/bin/sh
 
-# Create directories if they don't exist
 mkdir -p /var/www/html/wordpress
 
-# Change to the directory where WordPress should be installed
 cd /var/www/html/wordpress
 
-# Check if WordPress is already downloaded and wp-config.php exists
 if [ -f wp-config.php ]; then
     echo "WordPress is already downloaded."
 else
     echo "Downloading WordPress..."
     curl -LO https://wordpress.org/latest.tar.gz
-    # Extract WordPress, strip the top-level directory
+
     tar xzvf latest.tar.gz --strip-components=1
     rm -rf latest.tar.gz
     
     echo "Creating wp-config.php..."
-    # Assumes wp-cli is available in the PATH
+
     wp config create --dbname="$MYSQL_DATABASE" \
     --dbuser="$WORDPRESS_DB_USER" \
     --dbpass="$WORDPRESS_DB_PASSWORD" \
@@ -45,5 +42,5 @@ PHP
 fi
 
 echo "Starting PHP-FPM..."
-# Make sure the path to PHP-FPM executable is correct for your setup
+
 exec /usr/sbin/php-fpm82 -F

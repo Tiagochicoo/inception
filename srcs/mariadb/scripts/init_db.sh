@@ -2,21 +2,17 @@
 
 echo "Creating MariaDB Database..."
 
-# Ensure the environment variables are passed correctly
 DB_NAME=${MYSQL_DATABASE}
 DB_USER=${MYSQL_USER}
 DB_PASSWORD=${MYSQL_PASSWORD}
 ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
-# Initialize the data directory if it doesn't exist
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     mariadb-install-db --user=mysql --datadir=/var/lib/mysql
 fi
 
-# Start MariaDB in the background with a custom socket and pid file to avoid conflicts
 mysqld_safe --datadir='/var/lib/mysql' --socket='/run/mysqld/mysqld.sock' --pid-file='/run/mysqld/mysqld.pid' &
 
-# Wait for MariaDB to start up
 while ! mysqladmin ping --socket='/run/mysqld/mysqld.sock' --silent; do
     echo "Waiting for MariaDB to start..."
     sleep 1
