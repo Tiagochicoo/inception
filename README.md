@@ -19,7 +19,7 @@ Version: 2.
 # Chapter I
 
 # Preamble
-
+![Screenshot 2024-03-30 at 12-41-37 en subject pdf](https://github.com/Tiagochicoo/inception/assets/49552668/6e228e47-f3e7-4ed4-853b-1a8f91ec79b8)
 
 # Chapter II
 
@@ -131,6 +131,9 @@ Inception
 ```
 Here is an example diagram of the expected result:
 ```
+
+![image](https://github.com/Tiagochicoo/inception/assets/49552668/2e7d3bc5-9f20-4add-91ba-5c90a0ae8224)
+
 
 Inception
 
