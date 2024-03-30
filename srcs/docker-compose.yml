@@ -57,12 +57,12 @@ services:
       - inception
 
   "42":
-    container_name: "42"
-    build: ./bonus/42
-    ports:
-      - "4242:4242"
-    networks:
-      - inception
+     container_name: "42"
+     build: ./bonus/42
+     ports:
+       - "9999:9999"
+     networks:
+       - inception
 
 # Need to change the device paths to show /home/tpereira/data/... in 42 cluster VM
 volumes:
@@ -70,13 +70,13 @@ volumes:
     driver: local
     driver_opts: 
       type: none
-      device: /Users/tiago/Desktop/42Cursus/inception/srcs/data/wordpress
+      device: /home/tpereira/data/wordpress
       o: bind
   mariadb_vol:
     driver: local
     driver_opts: 
       type: none
-      device: /Users/tiago/Desktop/42Cursus/inception/srcs/data/mariadb
+      device: /home/tpereira/data/mariadb
       o: bind
 
 networks:

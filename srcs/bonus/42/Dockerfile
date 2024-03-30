@@ -12,6 +12,6 @@ RUN ln -s /usr/bin/php82 /usr/bin/php
 
 COPY configs/index.html /var/www/42.html
 
-EXPOSE 4242
+EXPOSE 9999 
 
-CMD php -S 0.0.0.0:4242 -t /var/www/ /var/www/42.html
+CMD php -S 0.0.0.0:9999 -t /var/www/ /var/www/42.html
