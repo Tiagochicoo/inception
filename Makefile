@@ -62,8 +62,8 @@ logs:
 	docker-compose -f $(COMPOSE_FILE) logs
 
 remove:
-	rm -rf ./srcs/data/wordpress/*
-	rm -rf ./srcs/data/mariadb/*
+	rm -rf ~/data/wordpress/*
+	rm -rf ~/data/mariadb/*
 	docker stop $$(docker ps -qa); docker rm $$(docker ps -qa);
 	docker rmi -f $$(docker images -qa); 
 	docker volume rm $$(docker volume ls -q); 

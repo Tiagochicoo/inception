@@ -7,7 +7,7 @@ services:
     ports:
       - "443:443"
     volumes:
-      - wordpress_vol:/var/www/html/wordpress
+      - wordpress_vol:/var/www/html/
       - ./nginx/ssl:/etc/nginx/ssl/
       - ./nginx/default.conf:/etc/nginx/http.d/nginx.conf
     depends_on:
@@ -37,7 +37,7 @@ services:
     container_name: wordpress
     build: ./wordpress
     volumes:
-      - wordpress_vol:/var/www/html/wordpress
+      - wordpress_vol:/var/www/html/
     env_file:
       - .env
     networks:

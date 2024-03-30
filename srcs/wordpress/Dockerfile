@@ -38,6 +38,8 @@ COPY ./scripts/run.sh /tmp/run.sh
 RUN chmod +x /tmp/run.sh
 
 RUN chmod 777 /var/www/html/wordpress
+RUN chown -R nobody:nobody /var/www/html/wordpress/
+
 
 WORKDIR /tmp/
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
