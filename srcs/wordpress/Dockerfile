@@ -33,6 +33,7 @@ RUN wget https://wordpress.org/latest.tar.gz \
 	&& rm latest.tar.gz
 
 COPY ./configs/www.conf /etc/php82/php-fpm.d/www.conf
+COPY ./configs/php.ini /etc/php82/
 COPY ./scripts/run.sh /tmp/run.sh
 
 RUN chmod +x /tmp/run.sh

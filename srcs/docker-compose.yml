@@ -70,13 +70,13 @@ volumes:
     driver: local
     driver_opts: 
       type: none
-      device: /home/tpereira/data/wordpress
+      device: /Users/tiago/Desktop/42Cursus/inception/srcs/data/wordpress
       o: bind
   mariadb_vol:
     driver: local
     driver_opts: 
       type: none
-      device: /home/tpereira/data/mariadb
+      device: /Users/tiago/Desktop/42Cursus/inception/srcs/data/mariadb
       o: bind
 
 networks:
