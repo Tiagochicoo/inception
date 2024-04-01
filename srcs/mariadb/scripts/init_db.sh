@@ -8,10 +8,13 @@ DB_PASSWORD=${MYSQL_PASSWORD}
 ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
 if [ ! -d "/var/lib/mysql/mysql" ]; then
+    echo "STARTING mariadb-install-db"
     mariadb-install-db --user=mysql --datadir=/var/lib/mysql
 fi
 
+echo "STARTING MYSQLD_SAFE"
 mysqld_safe --datadir='/var/lib/mysql' --socket='/run/mysqld/mysqld.sock' --pid-file='/run/mysqld/mysqld.pid' &
+echo "FINISHED MYSQLD_SAFE"
 
 while ! mysqladmin ping --socket='/run/mysqld/mysqld.sock' --silent; do
     echo "Waiting for MariaDB to start..."
