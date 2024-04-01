@@ -13,8 +13,6 @@ else
     tar xzvf latest.tar.gz --strip-components=1
     rm -rf latest.tar.gz
     
-    echo "Creating wp-config.php..."
-
     wp config create --dbname="$MYSQL_DATABASE" \
     --dbuser="$WORDPRESS_DB_USER" \
     --dbpass="$WORDPRESS_DB_PASSWORD" \
@@ -27,6 +25,7 @@ else
     define('FS_METHOD', 'direct');
 PHP
 
+    echo "wp-config.php created!"
     echo "Installing WordPress..."
     wp core install --url="$WORDPRESS_URL" \
     --title="$WORDPRESS_TITLE" \

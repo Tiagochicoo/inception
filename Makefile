@@ -65,9 +65,9 @@ remove:
 	rm -rf ~/data/wordpress/*
 	rm -rf ~/data/mariadb/*
 	docker stop $$(docker ps -qa); docker rm $$(docker ps -qa);
-	docker rmi -f $$(docker images -qa); 
 	docker volume rm srcs_wordpress_vol; 
 	docker volume rm srcs_mariadb_vol; 
+	docker rmi -f $$(docker images -qa);
 	docker network rm $$(docker network ls -q) 2>/dev/null
 
 .PHONY: all build up down clean fclean re ps logs
