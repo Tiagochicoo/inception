@@ -7,6 +7,8 @@ ENV_FILE = srcs/.env
 # Default action
 all: build up
 
+bonus: all
+
 # Build Docker images using docker-compose
 build:
 	@printf "\e[38;5;27m ╔════════════════════════════════════════╗ \e[0m\n"
