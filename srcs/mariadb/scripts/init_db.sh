@@ -21,7 +21,7 @@ while ! mysqladmin ping --socket='/run/mysqld/mysqld.sock' --silent; do
 done
 
 # Secure the installation (including setting root password, removing anonymous users, disallowing root login remotely)
-echo "SET PASSWORD FOR 'root'@'%' = PASSWORD('${ROOT_PASSWORD}');
+echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '${ROOT_PASSWORD}';
 DELETE FROM mysql.user WHERE User='';
 DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
 DROP DATABASE IF EXISTS test;
